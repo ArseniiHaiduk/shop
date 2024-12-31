@@ -1,14 +1,14 @@
-import { fetchAllProducts, fetchProducts } from "./api.js";
-import { pagination } from "../code/pagination.js";
+import { fetchAllProducts, fetchProducts } from "./api/api.js";
+import { pagination } from "./utils/pagination.js";
 import {
   addToCart,
   removeFromCart,
   handleQuantityChange,
   toggleCartItem,
-} from "./cart.js";
-import { generationCards } from "../code/ui.js";
-import { filterProducts } from "../code/search.js";
-import { Product } from "../types/prodact-type.js";
+} from "./cart/cart.js";
+import { generationCards } from "./ui/ui.js";
+import { filterProducts } from "./ui/search.js";
+import { Product } from "./types/prodact-type.js";
 
 const cardList: HTMLElement | null = document.querySelector(".cards");
 const loadMore: HTMLButtonElement | null = document.querySelector(".load-more");

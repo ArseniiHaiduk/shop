@@ -1,4 +1,4 @@
-import { generationCards } from "../code/ui.js";
+import { generationCards } from "./ui.js";
 function filterProducts(query, allProducts, cardList, displayedProducts) {
     let result = [];
     if (query === "") {

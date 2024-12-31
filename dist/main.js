@@ -7,11 +7,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { fetchAllProducts, fetchProducts } from "./api.js";
-import { pagination } from "../code/pagination.js";
-import { addToCart, removeFromCart, handleQuantityChange, toggleCartItem, } from "./cart.js";
-import { generationCards } from "../code/ui.js";
-import { filterProducts } from "../code/search.js";
+import { fetchAllProducts, fetchProducts } from "./api/api.js";
+import { pagination } from "./utils/pagination.js";
+import { addToCart, removeFromCart, handleQuantityChange, toggleCartItem, } from "./cart/cart.js";
+import { generationCards } from "./ui/ui.js";
+import { filterProducts } from "./ui/search.js";
 const cardList = document.querySelector(".cards");
 const loadMore = document.querySelector(".load-more");
 const modalBody = document.querySelector(".modal-body");
