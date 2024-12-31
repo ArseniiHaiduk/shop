@@ -1,4 +1,4 @@
-import { Product } from "./types/prodact-type";
+import { Product } from "../types/prodact-type";
 
 const apiBase = "https://dummyjson.com/products/";
 

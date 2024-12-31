@@ -1,5 +1,5 @@
-import { generationCards } from "./ui.js";
-import { Product } from "./types/prodact-type";
+import { generationCards } from "../code/ui.js";
+import { Product } from "../types/prodact-type";
 
 function filterProducts(
   query: string,

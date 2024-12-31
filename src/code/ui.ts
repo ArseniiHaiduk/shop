@@ -1,4 +1,4 @@
-import { Product } from "./types/prodact-type";
+import { Product } from "../types/prodact-type";
 
 function generationCards(container: HTMLElement, products: Product[]) {
   products.forEach((product: Product) => {
