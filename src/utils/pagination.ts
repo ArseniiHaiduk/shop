@@ -1,7 +1,7 @@
-import { Pagination } from "../types/pagination-type";
+import { Pagination } from "../types";
 
 export const pagination: Pagination = {
-  limit: 3,
+  limit: 10,
   skip: 0,
   select: [
     "category",
@@ -14,5 +14,9 @@ export const pagination: Pagination = {
   ],
   next() {
     this.skip += this.limit;
+  },
+
+  reset() {
+    this.skip = 0;
   },
 };

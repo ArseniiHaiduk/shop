@@ -33,10 +33,10 @@
               <div>&times;</div>
             </button>
           </div>
-          <div class="modal-body"></div>
+          <div class="modal-body" id="cartContent"></div>
           <div class="modal-footer justify-content-between">
             <div>
-              <p class="total-price">Total: $0</p>
+              <p class="total-price">Total: $<span id="totalPrice">0</span></p>
             </div>
             <div>
               <button
@@ -78,12 +78,18 @@
               </li>
               <li class="nav-item cart-button">
                 <button
-                  class="btn btn-outline-success"
+                  class="btn btn-outline-success position-relative"
                   type="button"
                   data-bs-toggle="modal"
                   data-bs-target="#exampleModal"
                 >
                   Cart
+                  <span
+                    id="cartBadge"
+                    class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none"
+                  >
+                    0
+                  </span>
                 </button>
               </li>
               <li class="nav-item dropdown">
@@ -109,7 +115,7 @@
                 <a class="nav-link disabled" aria-disabled="true">Disabled</a>
               </li>
             </ul>
-            <form class="d-flex" role="search">
+            <form class="d-flex" role="search" id="searchForm">
               <input
                 id="searchInput"
                 class="form-control me-2"
@@ -130,7 +136,13 @@
         class="cards justify-content-center row row-cols-1 row-cols-sm-2 row-cols-md-4"
       ></div>
       <div class="text-center">
-        <button type="button" class="load-more btn btn-dark">Load More</button>
+        <button
+          id="loadMoreButton"
+          type="button"
+          class="load-more btn btn-dark d-none"
+        >
+          Load More
+        </button>
       </div>
     </main>
     <script

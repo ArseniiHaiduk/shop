@@ -1,5 +1,5 @@
 export const pagination = {
-    limit: 3,
+    limit: 10,
     skip: 0,
     select: [
         "category",
@@ -12,5 +12,8 @@ export const pagination = {
     ],
     next() {
         this.skip += this.limit;
+    },
+    reset() {
+        this.skip = 0;
     },
 };
