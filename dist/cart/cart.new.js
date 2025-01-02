@@ -1,4 +1,4 @@
-import { cartItemHtml } from "../ui/index.js";
+import { cartItemHtml } from "../ui/ui.js";
 class Cart {
     constructor() {
         this.items = [];
@@ -91,14 +91,12 @@ class Cart {
     }
     handleQuantityChange(event, cartItem) {
         const target = event.target;
-        let value = target.valueAsNumber;
+        const value = target.valueAsNumber;
         if (isNaN(value) || value < 1) {
             target.value = "1";
-            value = 1;
         }
         else if (value > 99) {
             target.value = "99";
-            value = 99;
         }
         this.setQuantity(cartItem, value);
     }

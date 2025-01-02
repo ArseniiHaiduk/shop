@@ -8,22 +8,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 const apiBase = "https://dummyjson.com/products/";
-function fetchAllProducts(selectParams) {
+export function fetchAllProducts(selectParams) {
     return __awaiter(this, void 0, void 0, function* () {
         const response = yield fetch(`${apiBase}?limit=0&select=${selectParams}`);
-        if (!response.ok)
+        if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
+        }
         const { products } = yield response.json();
         return products;
     });
 }
-function fetchProducts(skip, limit) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const response = yield fetch(`${apiBase}?skip=${skip}&limit=${limit}`);
-        if (!response.ok)
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        const { products } = yield response.json();
-        return products;
-    });
-}
-export { fetchProducts, fetchAllProducts };
