@@ -1,7 +1,7 @@
 import { Pagination } from "../types";
 
 export const pagination: Pagination = {
-  limit: 10,
+  limit: 15,
   skip: 0,
   select: [
     "category",
