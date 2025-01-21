@@ -1,50 +1,47 @@
-import { Product } from "../types/product.types";
+import { fetchProductDetails } from "../api/api.js";
+import Cart from "../cart/cart.js";
+import { Product } from "../types/product.types.js";
 import { productDetailsHtml } from "../ui/ui.js";
-import ProductsList from "./products.list.js";
 
-export default class ProductCardHandler {
-  private cards: NodeListOf<HTMLElement>;
+export default class ProductDetails {
+  private productId: number;
+  private product?: Product;
 
-  constructor(selector: string) {
-    this.cards = document.querySelectorAll<HTMLDivElement>(selector);
+  constructor(id: number, private cart: Cart, private container: HTMLElement) {
+    this.productId = id;
   }
 
-  public init(): void {
-    console.log("ProductCardHandler initialized.");
+  async init() {
+    await this.loadAndDisplay();
 
-    this.cards.forEach((card) => {
-      console.log(card);
+    const addToCartButton = this.container.querySelector(".add-to-cart-btn")!;
 
-      card.addEventListener("click", (event: MouseEvent) => {
-        console.log("Card clicked.");
+    if (addToCartButton && this.product) {
+      addToCartButton.addEventListener("click", (event: Event) => {
+        event.preventDefault();
+        event.stopPropagation();
 
-        const target = event.target as HTMLElement;
-
-        if (target.classList.contains("buy-btn")) {
-          return;
-        }
-
-        const productId = card.dataset.id;
-
-        if (productId) {
-          window.location.href = `/product.html?id=${productId}`;
-          const productsList = new ProductsList();
-          productsList.allProducts.forEach((product) => {
-            if (product.id === Number(productId)) {
-              console.log(product);
-              this.renderProductDetails(product);
-            }
-          });
-        } else {
-          console.error("Product ID is not defined.");
+        if (this.product) {
+          this.cart.add(this.product);
         }
       });
-    });
+    }
   }
 
-  private renderProductDetails(product: Product): void {
-    const productDetailsContainer = document.querySelector(".product-details")!;
-    productDetailsContainer.innerHTML = "";
-    productDetailsContainer.innerHTML = productDetailsHtml(product);
+  private async load() {
+    this.product = await fetchProductDetails(this.productId);
+  }
+
+  private async loadAndDisplay() {
+    this.container.innerHTML = "Please wait...";
+
+    try {
+      this.product = await fetchProductDetails(this.productId);
+
+      this.container.innerHTML = productDetailsHtml(this.product);
+    } catch (error) {
+      this.container.innerHTML =
+        "Cannot fetch product details: " + (error as Error).message;
+    }
   }
 }

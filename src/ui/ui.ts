@@ -1,7 +1,24 @@
 import { CartItem } from "../types/cart.types";
 import { Product } from "../types/product.types";
 
-export function productItemHtml(product: Product) {
+export function productsListHtml() {
+  return `
+    <div
+      class="cards justify-content-center row row-cols-1 row-cols-sm-2 row-cols-md-4"
+    ></div>
+    <div class="text-center">
+      <button
+        id="loadMoreButton"
+        type="button"
+        class="load-more btn btn-dark d-none"
+      >
+        Load More
+      </button>
+    </div>
+  `;
+}
+
+export function productsListItemHtml(product: Product) {
   return `<div data-id="${product.id}" class="card product-card" style="width: 18rem">
             <img src="${product.thumbnail}" class="card-img-top" alt="${product.title}" />
             <div class="card-body">
@@ -61,8 +78,8 @@ export function productDetailsHtml(product: Product) {
             <h1 class="h3 mb-3">${product.title}</h1>
             <div class="text-danger h4 mb-3">${product.price}</div>
             <div class="d-flex gap-2 mb-3">
-              <button class="btn btn-success">Buy Now</button>
-              <button class="btn btn-primary">Add to Cart</button>
+              <button class="btn btn-success" disabled>Buy Now</button>
+              <button class="btn btn-primary add-to-cart-btn">Add to Cart</button>
             </div>
             <div>
               <h3 class="h5">Additional Services:</h3>

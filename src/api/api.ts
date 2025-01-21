@@ -13,3 +13,13 @@ export async function fetchAllProducts(): Promise<Product[]> {
 
   return products;
 }
+
+export async function fetchProductDetails(id: number): Promise<Product> {
+  const response = await fetch(`${apiBase}/${id}`);
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! Status: ${response.status}`);
+  }
+
+  return response.json();
+}

@@ -2,9 +2,8 @@ import { fetchAllProducts } from "../api/api.js";
 import Cart from "../cart/cart.js";
 import { Pagination } from "../types/pagination.types";
 import { Product } from "../types/product.types";
-import { productItemHtml } from "../ui/ui.js";
+import { productsListHtml, productsListItemHtml } from "../ui/ui.js";
 import { pagination } from "../utils/pagination.js";
-import ProductCardHandler from "./product.detail.js";
 
 class ProductsList {
   public allProducts: Product[];
@@ -13,42 +12,28 @@ class ProductsList {
 
   private cardList: HTMLElement;
   private loadMoreButton: HTMLButtonElement;
-  private searchForm: HTMLFormElement;
-  private searchInput: HTMLInputElement;
-  private searchDebounceTimer: ReturnType<typeof setTimeout> | undefined;
 
-  constructor(private cart: Cart | null = null) {
+  constructor(
+    private cart: Cart,
+    private container: HTMLElement,
+    private search?: string
+  ) {
     this.allProducts = [];
     this.products = [];
     this.pagination = pagination;
 
+    this.container.innerHTML = productsListHtml();
+
     this.cardList = document.querySelector<HTMLElement>(".cards")!;
     this.loadMoreButton =
       document.querySelector<HTMLButtonElement>("#loadMoreButton")!;
-
-    this.searchForm = document.querySelector<HTMLFormElement>("#searchForm")!;
-
-    this.searchInput =
-      document.querySelector<HTMLInputElement>("#searchInput")!;
   }
 
   init() {
-    if (!this.cardList || !this.loadMoreButton || !this.searchForm) {
-      console.warn(
-        "ProductsList: init() is not executed because this is not the main page."
-      );
-      return;
-    }
     this.loadMoreButton.addEventListener(
       "click",
       this.loadMoreHandler.bind(this)
     );
-
-    this.searchForm.addEventListener(
-      "submit",
-      this.searchSubmitHandler.bind(this)
-    );
-    this.searchInput.addEventListener("input", this.searchHandler.bind(this));
 
     this.load();
   }
@@ -74,13 +59,12 @@ class ProductsList {
       "d-none",
       this.products.length <= this.pagination.skip
     );
-    this.initProductCardHandler();
   }
 
   async load() {
     try {
       this.allProducts = await fetchAllProducts();
-      this.products = [...this.allProducts];
+      this.products = this.getProductsToDisplay(this.search);
       this.display();
     } catch (error) {
       console.error("Error loading products:", error);
@@ -89,14 +73,24 @@ class ProductsList {
 
   private createProductElement(product: Product) {
     const productElement = document.createElement("div");
-    productElement.innerHTML = productItemHtml(product);
+    productElement.innerHTML = productsListItemHtml(product);
 
     const buyButton = productElement.querySelector(".buy-btn")!;
-    buyButton.addEventListener("click", () => {
-      this.cart?.add(product); // Optional chaining
+
+    buyButton.addEventListener("click", (event: Event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      this.cart.add(product);
     });
 
-    return productElement.firstElementChild!;
+    const element = productElement.children[0] as HTMLElement;
+
+    element.onclick = (event: MouseEvent) => {
+      event.preventDefault();
+      window.location.hash = `/product/${product.id}`;
+    };
+
+    return element;
   }
 
   private loadMoreHandler() {
@@ -104,33 +98,12 @@ class ProductsList {
     this.display();
   }
 
-  private searchSubmitHandler(event: Event) {
-    event.preventDefault();
-    const query = (event.target as HTMLInputElement).value.trim();
-    this.searchProducts(query);
-  }
-
-  private searchHandler(event: Event) {
-    const query = (event.target as HTMLInputElement).value.trim();
-
-    clearTimeout(this.searchDebounceTimer);
-
-    this.searchDebounceTimer = setTimeout(() => {
-      this.searchProducts(query);
-    }, 500);
-  }
-
-  private searchProducts(query: string) {
-    this.products = this.allProducts.filter((product) =>
-      product.title.toLowerCase().includes(query.toLowerCase())
-    );
-
-    this.display(true);
-  }
-
-  private initProductCardHandler() {
-    const productCardHandler = new ProductCardHandler(".product-card");
-    productCardHandler.init();
+  private getProductsToDisplay(search?: string) {
+    return search
+      ? this.allProducts.filter((product) =>
+          product.title.toLowerCase().includes(search.toLowerCase())
+        )
+      : [...this.allProducts];
   }
 }
 

@@ -18,3 +18,12 @@ export function fetchAllProducts() {
         return products;
     });
 }
+export function fetchProductDetails(id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const response = yield fetch(`${apiBase}/${id}`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+    });
+}

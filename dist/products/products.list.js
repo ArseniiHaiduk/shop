@@ -8,30 +8,23 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import { fetchAllProducts } from "../api/api.js";
-import { productItemHtml } from "../ui/ui.js";
+import { productsListHtml, productsListItemHtml } from "../ui/ui.js";
 import { pagination } from "../utils/pagination.js";
-import ProductCardHandler from "./product.detail.js";
 class ProductsList {
-    constructor(cart = null) {
+    constructor(cart, container, search) {
         this.cart = cart;
+        this.container = container;
+        this.search = search;
         this.allProducts = [];
         this.products = [];
         this.pagination = pagination;
+        this.container.innerHTML = productsListHtml();
         this.cardList = document.querySelector(".cards");
         this.loadMoreButton =
             document.querySelector("#loadMoreButton");
-        this.searchForm = document.querySelector("#searchForm");
-        this.searchInput =
-            document.querySelector("#searchInput");
     }
     init() {
-        if (!this.cardList || !this.loadMoreButton || !this.searchForm) {
-            console.warn("ProductsList: init() is not executed because this is not the main page.");
-            return;
-        }
         this.loadMoreButton.addEventListener("click", this.loadMoreHandler.bind(this));
-        this.searchForm.addEventListener("submit", this.searchSubmitHandler.bind(this));
-        this.searchInput.addEventListener("input", this.searchHandler.bind(this));
         this.load();
     }
     get() {
@@ -48,13 +41,12 @@ class ProductsList {
             this.cardList.appendChild(this.createProductElement(product));
         });
         this.loadMoreButton.classList.toggle("d-none", this.products.length <= this.pagination.skip);
-        this.initProductCardHandler();
     }
     load() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 this.allProducts = yield fetchAllProducts();
-                this.products = [...this.allProducts];
+                this.products = this.getProductsToDisplay(this.search);
                 this.display();
             }
             catch (error) {
@@ -64,37 +56,28 @@ class ProductsList {
     }
     createProductElement(product) {
         const productElement = document.createElement("div");
-        productElement.innerHTML = productItemHtml(product);
+        productElement.innerHTML = productsListItemHtml(product);
         const buyButton = productElement.querySelector(".buy-btn");
-        buyButton.addEventListener("click", () => {
-            var _a;
-            (_a = this.cart) === null || _a === void 0 ? void 0 : _a.add(product); // Optional chaining
+        buyButton.addEventListener("click", (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            this.cart.add(product);
         });
-        return productElement.firstElementChild;
+        const element = productElement.children[0];
+        element.onclick = (event) => {
+            event.preventDefault();
+            window.location.hash = `/product/${product.id}`;
+        };
+        return element;
     }
     loadMoreHandler() {
         this.pagination.next();
         this.display();
     }
-    searchSubmitHandler(event) {
-        event.preventDefault();
-        const query = event.target.value.trim();
-        this.searchProducts(query);
-    }
-    searchHandler(event) {
-        const query = event.target.value.trim();
-        clearTimeout(this.searchDebounceTimer);
-        this.searchDebounceTimer = setTimeout(() => {
-            this.searchProducts(query);
-        }, 500);
-    }
-    searchProducts(query) {
-        this.products = this.allProducts.filter((product) => product.title.toLowerCase().includes(query.toLowerCase()));
-        this.display(true);
-    }
-    initProductCardHandler() {
-        const productCardHandler = new ProductCardHandler(".product-card");
-        productCardHandler.init();
+    getProductsToDisplay(search) {
+        return search
+            ? this.allProducts.filter((product) => product.title.toLowerCase().includes(search.toLowerCase()))
+            : [...this.allProducts];
     }
 }
 export default ProductsList;
