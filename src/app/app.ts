@@ -48,7 +48,7 @@ export default class App {
     window.location.hash = "/search/" + encodeURIComponent(search);
   }
 
-  showPage() {
+  private showPage() {
     if (this.url === "/" || this.isSearchPage()) {
       return this.showProductsListPage();
     }
@@ -64,7 +64,7 @@ export default class App {
     return /^\/search\/.*/.test(this.url);
   }
 
-  showProductsListPage() {
+  private showProductsListPage() {
     const search = this.isSearchPage()
       ? decodeURIComponent(this.url.replace(/(\/search\/)(.*)/, "$2"))
       : undefined;
@@ -75,7 +75,7 @@ export default class App {
     productsList.init();
   }
 
-  showProductDetailsPage() {
+  private showProductDetailsPage() {
     const productId = Number(this.url.replace(/(.*\/product\/)(\d+)/, "$2"));
 
     if (isNaN(productId)) {
@@ -90,7 +90,7 @@ export default class App {
     productDetails.init();
   }
 
-  showNotFoundPage() {
+  private showNotFoundPage() {
     this.pageContent.innerHTML = "PAGE NOT FOUND";
   }
 }
