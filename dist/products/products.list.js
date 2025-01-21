@@ -7,11 +7,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { fetchAllProducts } from "../api/index.js";
-import { productItemHtml } from "../ui/index.js";
-import { pagination } from "../utils/index.js";
+import { fetchAllProducts } from "../api/api.js";
+import { productItemHtml } from "../ui/ui.js";
+import { pagination } from "../utils/pagination.js";
+import ProductCardHandler from "./product.detail.js";
 class ProductsList {
-    constructor(cart) {
+    constructor(cart = null) {
         this.cart = cart;
         this.allProducts = [];
         this.products = [];
@@ -24,6 +25,10 @@ class ProductsList {
             document.querySelector("#searchInput");
     }
     init() {
+        if (!this.cardList || !this.loadMoreButton || !this.searchForm) {
+            console.warn("ProductsList: init() is not executed because this is not the main page.");
+            return;
+        }
         this.loadMoreButton.addEventListener("click", this.loadMoreHandler.bind(this));
         this.searchForm.addEventListener("submit", this.searchSubmitHandler.bind(this));
         this.searchInput.addEventListener("input", this.searchHandler.bind(this));
@@ -43,11 +48,12 @@ class ProductsList {
             this.cardList.appendChild(this.createProductElement(product));
         });
         this.loadMoreButton.classList.toggle("d-none", this.products.length <= this.pagination.skip);
+        this.initProductCardHandler();
     }
     load() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                this.allProducts = yield fetchAllProducts(pagination.select);
+                this.allProducts = yield fetchAllProducts();
                 this.products = [...this.allProducts];
                 this.display();
             }
@@ -61,7 +67,8 @@ class ProductsList {
         productElement.innerHTML = productItemHtml(product);
         const buyButton = productElement.querySelector(".buy-btn");
         buyButton.addEventListener("click", () => {
-            this.cart.add(product);
+            var _a;
+            (_a = this.cart) === null || _a === void 0 ? void 0 : _a.add(product); // Optional chaining
         });
         return productElement.firstElementChild;
     }
@@ -84,6 +91,10 @@ class ProductsList {
     searchProducts(query) {
         this.products = this.allProducts.filter((product) => product.title.toLowerCase().includes(query.toLowerCase()));
         this.display(true);
+    }
+    initProductCardHandler() {
+        const productCardHandler = new ProductCardHandler(".product-card");
+        productCardHandler.init();
     }
 }
 export default ProductsList;

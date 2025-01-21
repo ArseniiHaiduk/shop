@@ -1,5 +1,6 @@
-import { CartItem, Product } from "../types";
-import { cartItemHtml } from "../ui/index.js";
+import { CartItem } from "../types/cart.types";
+import { Product } from "../types/product.types";
+import { cartItemHtml } from "../ui/ui.js";
 
 class Cart {
   private items: CartItem[] = [];

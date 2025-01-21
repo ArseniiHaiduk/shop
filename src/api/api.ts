@@ -1,11 +1,9 @@
-import { Product } from "../types";
+import { Product } from "../types/product.types";
 
 const apiBase = "https://dummyjson.com/products/";
 
-export async function fetchAllProducts(
-  selectParams: string[]
-): Promise<Product[]> {
-  const response = await fetch(`${apiBase}?limit=0&select=${selectParams}`);
+export async function fetchAllProducts(): Promise<Product[]> {
+  const response = await fetch(`${apiBase}?limit=0`);
 
   if (!response.ok) {
     throw new Error(`HTTP error! Status: ${response.status}`);

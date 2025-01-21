@@ -1,0 +1,37 @@
+.cards {
+  margin: 50px 0;
+  gap: 15px;
+}
+
+.product-card {
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card-text {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card .card-img-top {
+  height: 262.4px;
+}
+
+.buy-btn {
+  margin-bottom: 16px;
+}
+
+.card-price-buy {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card-price-buy p,
+.card-price {
+  color: #198754;
+}

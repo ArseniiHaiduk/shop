@@ -1,11 +1,13 @@
-import { fetchAllProducts } from "../api/index.js";
-import { Cart } from "../cart/index.js";
-import { Pagination, Product } from "../types";
-import { productItemHtml } from "../ui/index.js";
-import { pagination } from "../utils/index.js";
+import { fetchAllProducts } from "../api/api.js";
+import Cart from "../cart/cart.js";
+import { Pagination } from "../types/pagination.types";
+import { Product } from "../types/product.types";
+import { productItemHtml } from "../ui/ui.js";
+import { pagination } from "../utils/pagination.js";
+import ProductCardHandler from "./product.detail.js";
 
 class ProductsList {
-  private allProducts: Product[];
+  public allProducts: Product[];
   private products: Product[];
   private pagination: Pagination;
 
@@ -15,7 +17,7 @@ class ProductsList {
   private searchInput: HTMLInputElement;
   private searchDebounceTimer: ReturnType<typeof setTimeout> | undefined;
 
-  constructor(private cart: Cart) {
+  constructor(private cart: Cart | null = null) {
     this.allProducts = [];
     this.products = [];
     this.pagination = pagination;
@@ -31,6 +33,12 @@ class ProductsList {
   }
 
   init() {
+    if (!this.cardList || !this.loadMoreButton || !this.searchForm) {
+      console.warn(
+        "ProductsList: init() is not executed because this is not the main page."
+      );
+      return;
+    }
     this.loadMoreButton.addEventListener(
       "click",
       this.loadMoreHandler.bind(this)
@@ -66,11 +74,12 @@ class ProductsList {
       "d-none",
       this.products.length <= this.pagination.skip
     );
+    this.initProductCardHandler();
   }
 
   async load() {
     try {
-      this.allProducts = await fetchAllProducts(pagination.select);
+      this.allProducts = await fetchAllProducts();
       this.products = [...this.allProducts];
       this.display();
     } catch (error) {
@@ -84,7 +93,7 @@ class ProductsList {
 
     const buyButton = productElement.querySelector(".buy-btn")!;
     buyButton.addEventListener("click", () => {
-      this.cart.add(product);
+      this.cart?.add(product); // Optional chaining
     });
 
     return productElement.firstElementChild!;
@@ -117,6 +126,11 @@ class ProductsList {
     );
 
     this.display(true);
+  }
+
+  private initProductCardHandler() {
+    const productCardHandler = new ProductCardHandler(".product-card");
+    productCardHandler.init();
   }
 }
 
