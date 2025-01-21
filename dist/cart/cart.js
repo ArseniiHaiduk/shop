@@ -1,4 +1,4 @@
-import { cartItemHtml } from "../ui/index.js";
+import { cartItemHtml } from "../ui/ui.js";
 class Cart {
     constructor() {
         this.items = [];

@@ -1,8 +1,5 @@
-import { Cart } from "./cart/index.js";
-import { ProductsList } from "./products/index.js";
+import App from "./app/app.js";
 
-const cart = new Cart();
+const app = new App();
 
-const productsList = new ProductsList(cart);
-
-productsList.init();
+app.init();
